@@ -40,7 +40,7 @@ class OrderProcessor
 
         $urgentOrders->toQuery()
             ->select('orders.*', 'users.tier')
-            ->join('users', 'orders.customer_id', '=', 'users.id')
+            ->join('users', 'orders.user_id', '=', 'users.id')
             ->where('users.tier', 'vip')
             ->update(['priority' => 'critical']);
     }

@@ -50,3 +50,14 @@ it('processes orders that are ready and scheduled for today or earlier', functio
                $event->ordersByRegion->first()->count === 1;
     });
 })->only();
+
+it('update orders priority when users are vip-tier', function () {
+    $vipUser = User::factory()->set('tier', 'vip')->hasOrders(['priority' => 'high'])->create();
+    $baseUser = User::factory()->set('tier', 'base')->hasOrders(['priority' => 'high'])->create();
+
+    $processor = new OrderProcessor;
+    $processor->updatePriorities();
+
+    expect($vipUser->orders->first()->fresh()->priority)->toBe('critical');
+    expect($baseUser->orders->first()->fresh()->priority)->toBe('high');
+})->only();
